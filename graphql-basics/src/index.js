@@ -1,10 +1,12 @@
 import {GraphQLServer} from 'graphql-yoga';
 
-//type defintions (app schema - what ops can be performed on the api)
+//scalar type arrays
+
 const typeDefs = `
     type Query {
-        add(num1: Float!, num2: Float!): Float!
+        add(numbers: [Float!]!): Float!
         greeting(name: String, position: String): String!
+        grades: [Int]!
         me: User!
         post: Post!
     }
@@ -29,13 +31,20 @@ const typeDefs = `
 const resolvers = {
     Query: {
         add(parent, args, ctx, info) {
-            return args.num1 + args.num2
+            if (args.numbers.length === 0) {
+                return 0
+            }
+
+            return args.numbers.reduce((accumulator, currentValue) => accumulator + currentValue)
         },
         greeting(parent, args, ctx, info) {
             if (args.name) {
                 return `hello, ${args.name}! You are my favorite ${args.position}.`
             } 
             return 'Hello!'
+        },
+        grades(parent, args, ctx, info) {
+            return [99, 10, 50, 80, 93]
         },
        me() {
            return {
