@@ -3,28 +3,32 @@ import {GraphQLServer} from 'graphql-yoga';
 //type defintions (app schema - what ops can be performed on the api)
 const typeDefs = `
     type Query {
-        hello: String!
-        name: String!
-        location: String!
-        bio: String!
+       title: String!
+       price: Float!
+       releaseYear: Int
+       rating: Float
+       inStock: Boolean
     }
 `
 
 //Resolvers
 const resolvers = {
     Query: {
-        hello() {
-            return 'This is my first query!'
-        },
-        name() {
-            return 'Bill'
-        },
-        location() {
-            return 'Denver'
-        },
-        bio() {
-            return 'I love law.'
-        }
+       title () {
+           return 'Polo'
+       },
+       price () {
+        return 45.2
+       },
+       releaseYear () {
+        return 2018
+       },
+       rating () {
+        return null
+       },
+       inStock () {
+        return true
+       }
     }
 }
 
