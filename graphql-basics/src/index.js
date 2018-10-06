@@ -1,11 +1,12 @@
 import {GraphQLServer} from 'graphql-yoga';
 
-import {users, posts} from './../seed/seed-data';
+import {users, posts, comments} from './../seed/seed-data';
 
 const typeDefs = `
     type Query {
         users(query: String): [User!]!
         posts(query: String): [Post!]!
+        comments: [Comment!]!
         me: User!
         post: Post!
     }
@@ -16,19 +17,26 @@ const typeDefs = `
         email: String!
         age: Int
         posts: [Post!]!
+        comments:[Comment!]
     }
 
-    type  Post {
+    type Post {
         id: ID!
         title: String!
         body: String!
         published: Boolean!
         author: User!
+        comments: [Comment!]!
+    }
+   
+    type Comment {
+        id: ID!
+        text: String!
+        author: User!
+        postAssoc: Post!
     }
 `
 
-
-//Resolvers
 const resolvers = {
     Query: {
         users(parent, args, ctx, info) {
@@ -53,6 +61,9 @@ const resolvers = {
                 }
             })
         },
+        comments(parent, args, ctx, info) {
+            return comments
+        },
        me() {
            return {
                id: '123yyy',
@@ -74,12 +85,34 @@ const resolvers = {
             return users.find(user => {
                 return user.id === parent.author
             })
+        },
+        comments(parent, args, ctx, info) {
+            return comments.filter(comment => {
+                return parent.id === comment.postAssoc
+            })
         }
     },
     User: {
         posts(parent, args, ctx, info) {
             return posts.filter(post => {
                 return post.author === parent.id
+            })
+        },
+        comments(parent, args, ctx, info) {
+            return comments.filter(comment => {
+                return parent.id === comment.author
+            })
+        }
+    },
+    Comment: {
+        author(parent, args, ctx, info) {
+            return users.find(user => {
+                return parent.author === user.id
+            })
+        },
+        postAssoc(parent, args, ctx, info) {
+            return posts.find(post => {
+                return parent.postAssoc === post.id
             })
         }
     }
