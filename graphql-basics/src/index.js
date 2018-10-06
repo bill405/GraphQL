@@ -1,57 +1,11 @@
 import {GraphQLServer} from 'graphql-yoga';
 
-//seed data
-const users = [{
-        id: 23,
-        name: 'Bill',
-        email: 'bill@example.com',
-        age: 40
-    },
-    {
-        id: 25,
-        name: 'Sarah',
-        email: 'sarah@example.com',
-        age: 20
-    },
-    {
-        id: 3,
-        name: 'Mike',
-        email: 'mike@example.com',
-    }
-];
-
-const posts = [{
-        id: 100,
-        title: 'My excellent post',
-        body: 'My excellent body',
-        published: false
-    },
-    {
-        id: 101,
-        title: 'Good greek body',
-        body: 'Greek recipe body',
-        published: true
-    },
-    {
-        id: 102,
-        title: 'Money making ideas',
-        body: 'body make body',
-        published: false
-    },
-    {
-        id: 103,
-        title: 'Through the river',
-        body: 'Body of the river post',
-        published: true
-    }
-]
-
-//arrays of custom tpyes
+import {users, posts} from './../seed/seed-data';
 
 const typeDefs = `
     type Query {
-        posts(query: String): [Post!]!
         users(query: String): [User!]!
+        posts(query: String): [Post!]!
         me: User!
         post: Post!
     }
@@ -61,6 +15,7 @@ const typeDefs = `
         name: String!
         email: String!
         age: Int
+        posts: [Post!]!
     }
 
     type  Post {
@@ -68,6 +23,7 @@ const typeDefs = `
         title: String!
         body: String!
         published: Boolean!
+        author: User!
     }
 `
 
@@ -112,6 +68,20 @@ const resolvers = {
                published: true
            }
        }
+    },
+    Post: {
+        author(parent, args, ctx, info) {
+            return users.find(user => {
+                return user.id === parent.author
+            })
+        }
+    },
+    User: {
+        posts(parent, args, ctx, info) {
+            return posts.filter(post => {
+                return post.author === parent.id
+            })
+        }
     }
 }
 
