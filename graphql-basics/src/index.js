@@ -1,12 +1,57 @@
 import {GraphQLServer} from 'graphql-yoga';
 
-//scalar type arrays
+//seed data
+const users = [{
+        id: 23,
+        name: 'Bill',
+        email: 'bill@example.com',
+        age: 40
+    },
+    {
+        id: 25,
+        name: 'Sarah',
+        email: 'sarah@example.com',
+        age: 20
+    },
+    {
+        id: 3,
+        name: 'Mike',
+        email: 'mike@example.com',
+    }
+];
+
+const posts = [{
+        id: 100,
+        title: 'My excellent post',
+        body: 'My excellent body',
+        published: false
+    },
+    {
+        id: 101,
+        title: 'Good greek body',
+        body: 'Greek recipe body',
+        published: true
+    },
+    {
+        id: 102,
+        title: 'Money making ideas',
+        body: 'body make body',
+        published: false
+    },
+    {
+        id: 103,
+        title: 'Through the river',
+        body: 'Body of the river post',
+        published: true
+    }
+]
+
+//arrays of custom tpyes
 
 const typeDefs = `
     type Query {
-        add(numbers: [Float!]!): Float!
-        greeting(name: String, position: String): String!
-        grades: [Int]!
+        posts(query: String): [Post!]!
+        users(query: String): [User!]!
         me: User!
         post: Post!
     }
@@ -30,21 +75,27 @@ const typeDefs = `
 //Resolvers
 const resolvers = {
     Query: {
-        add(parent, args, ctx, info) {
-            if (args.numbers.length === 0) {
-                return 0
+        users(parent, args, ctx, info) {
+            if(!args.query) {
+                return users
+            }
+            return users.filter(user => {
+                return user.name.toLowerCase().includes(args.query.toLowerCase())
+            })
+        },
+        posts(parent, args, ctx, info) {
+            if(!args.query) {
+                return posts
             }
 
-            return args.numbers.reduce((accumulator, currentValue) => accumulator + currentValue)
-        },
-        greeting(parent, args, ctx, info) {
-            if (args.name) {
-                return `hello, ${args.name}! You are my favorite ${args.position}.`
-            } 
-            return 'Hello!'
-        },
-        grades(parent, args, ctx, info) {
-            return [99, 10, 50, 80, 93]
+            return posts.filter(post => {
+                
+                if (post.body.toLowerCase().includes(args.query.toLowerCase())) {
+                    return true
+                } else if (post.title.toLowerCase().includes(args.query.toLowerCase())) {
+                    return true
+                }
+            })
         },
        me() {
            return {
