@@ -14,6 +14,8 @@ const typeDefs = `
 
     type Mutation {
         createUser(name: String!, email: String!, age: Int): User!
+        createPost(title: String!, body: String!, author: ID!, published: Boolean!): Post!
+        createComment(text: String!, author: ID!, postAssoc: String!): Comment!
     }
 
     type User {
@@ -101,8 +103,42 @@ const resolvers = {
             }
 
             users.push(user)
-
             return user
+        },
+        createPost(parent, args, ctx, info) {
+            const userExists = users.find(user => args.author === user.id)
+            if(!userExists) {
+                throw new Error('No user was found!')
+            }
+
+            const post = {
+                id: uuidv4(),
+                author: args.author,
+                title: args.title,
+                body: args.body,
+                published: args.published
+            }
+
+            posts.push(post)
+            return post
+        },
+        createComment(parent, args, ctx, info) {
+            const authorValid = users.some(user => user.id === args.author) 
+            const postValid =  posts.find(post => post.id === args.postAssoc && post.published === true)
+
+            if(!authorValid || !postValid) {
+                throw new Error('Invalid post, author , or not published!')
+            }
+
+            const comment = {
+                id: uuidv4(),
+                author: args.author,
+                postAssoc: args.postAssoc,
+                text: args.text
+            }
+
+            comments.push(comment)
+            return comment
         }
     },
     Post: {
