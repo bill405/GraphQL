@@ -1,4 +1,4 @@
-let users = [{
+const users = [{
         id: '23',
         name: 'Bill',
         email: 'bill@example.com',
@@ -23,7 +23,7 @@ let users = [{
     }
 ];
 
-let posts = [{
+const posts = [{
         id: '100',
         title: 'My excellent post',
         body: 'My excellent body',
@@ -58,7 +58,7 @@ let posts = [{
 ]
 
 
-let comments = [{
+const comments = [{
         id: '200',
         text: 'My excellent comment',
         author: '23',
@@ -84,13 +84,14 @@ let comments = [{
     }
 ]
 
-function deletePostComments(postId) {
+/* function deletePostComments(postId) {
     comments = comments.filter(comment => comment.postAssoc !== postId)
-}
+} */
 
-export {
+const db =  {
     users,
     posts,
-    comments,
-    deletePostComments
+    comments
 }
+
+export {db as default}

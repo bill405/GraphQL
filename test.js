@@ -1,5 +1,3 @@
-//const uuidv4 = require('uuid/v4')
-import v4 from 'uuid/v4';
-const id = v4();
+import {db} from './graphql-basics/src/db'
 
-console.log(id)
+console.log(db);
