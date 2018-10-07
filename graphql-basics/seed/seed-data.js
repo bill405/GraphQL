@@ -1,17 +1,17 @@
-const users = [{
+let users = [{
         id: '23',
         name: 'Bill',
         email: 'bill@example.com',
         age: 40,
-        posts: ['100', '101'],
-        comments: ['200', '201']
+        posts: ['100', '102'],
+        comments: ['200', '202']
     },
     {
         id: '25',
         name: 'Sarah',
         email: 'sarah@example.com',
         age: 20,
-        posts: ['102'],
+        posts: ['101'],
         comments: []
     },
     {
@@ -19,11 +19,11 @@ const users = [{
         name: 'Mike',
         email: 'mike@example.com',
         posts: ['103'],
-        comments: ['202', '203']
+        comments: ['201', '203']
     }
 ];
 
-const posts = [{
+let posts = [{
         id: '100',
         title: 'My excellent post',
         body: 'My excellent body',
@@ -36,7 +36,7 @@ const posts = [{
         title: 'Good greek body',
         body: 'Greek recipe body',
         published: true,
-        author: '23',
+        author: '25',
         comments: []
     },
     {
@@ -52,12 +52,13 @@ const posts = [{
         title: 'Through the river',
         body: 'Body of the river post',
         published: true,
-        author: '25',
+        author: '24',
         comments: ['203']
     }
 ]
 
-const comments = [{
+
+let comments = [{
         id: '200',
         text: 'My excellent comment',
         author: '23',
@@ -67,7 +68,7 @@ const comments = [{
         id: '201',
         text: 'my comment about eggs',
         author: '23',
-        postAssoc: '101'
+        postAssoc: '102'
     },
     {
         id: '202',
@@ -83,8 +84,13 @@ const comments = [{
     }
 ]
 
+function deletePostComments(postId) {
+    comments = comments.filter(comment => comment.postAssoc !== postId)
+}
+
 export {
     users,
     posts,
-    comments
+    comments,
+    deletePostComments
 }
