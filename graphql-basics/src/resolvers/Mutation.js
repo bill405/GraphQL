@@ -50,7 +50,7 @@ const Mutation = {
                 throw new Error('Email taken already')
             }
 
-            user.eamil = data.email
+            user.eamil = args.data.email
         }
 
         if (typeof args.data.name === 'string') {
@@ -86,7 +86,28 @@ const Mutation = {
         const deletedPost = db.posts.splice(postIndex, 1)
         return deletedPost[0]
     },
+    updatePost(parent, args, {db}, info) {
+        const updatePost = db.posts.find(post => args.id === post.id);
+        
+        if (!updatePost) {
+            throw new Error('No post found!')
+        }
 
+        if(typeof args.data.title === 'string') {
+            updatePost.title = args.data.title
+        }
+
+        if(typeof args.data.body === 'string') {
+            updatePost.body = args.data.body
+        }
+
+        if(typeof args.data.published === 'boolean') {
+            updatePost.published = args.data.published
+        }
+
+        return updatePost
+
+    },
     createComment(parent, args, {db}, info) {
         const authorValid = db.users.some(user => user.id === args.data.author) 
         const postValid =  db.posts.find(post => post.id === args.data.postAssoc && post.published)
@@ -112,6 +133,19 @@ const Mutation = {
         const commentToDelete = db.comments.splice(deletedCommentIndex, 1)
         console.log(commentToDelete)
         return commentToDelete[0]
+    },
+    updateComment(parent, args, {db}, info) {
+        const { id, data } = args;
+        
+        const commentToUpdate = db.comments.find(comment => comment.id === id);
+        
+        if (!commentToUpdate) {
+            throw new Error('No comment found')
+        }
+
+        commentToUpdate.text = data.text
+        
+        return commentToUpdate
     }
 }
 
