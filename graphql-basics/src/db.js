@@ -84,10 +84,6 @@ const comments = [{
     }
 ]
 
-/* function deletePostComments(postId) {
-    comments = comments.filter(comment => comment.postAssoc !== postId)
-} */
-
 const db =  {
     users,
     posts,
